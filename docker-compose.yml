@@ -1,0 +1,46 @@
+services:
+  meltano:
+    build: ./meltano
+    volumes:
+      - .:/workspace:cached
+      - meltano_packages:/root/.cache/pip
+    ports:
+      - "5000:5000"
+    tty: true
+
+  superset:
+    image: apache/superset:latest
+    env_file:
+      - .env
+    volumes:
+      - .:/workspace:cached
+    environment:
+      - SUPERSET_SECRET_KEY=${SUPERSET_SECRET_KEY}
+    ports:
+      - "8088:8088"
+
+  dbt:
+    build: ./dbt
+    volumes:
+      - dbt_packages:/root/.cache/pip
+      - .:/workspace:cached
+    tty: true
+
+  minio:
+    image: minio/minio
+    volumes:
+      - .:/workspace:cached
+    env_file:
+      - .env
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    command: server /workspace/minio/data
+    working_dir: /workspace
+
+volumes:
+  dbt_packages:
+  meltano_packages:

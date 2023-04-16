@@ -1,0 +1,8 @@
+{
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "workspaceFolder": "/workspace/minio",
+    "shutdownAction": "none",
+    "service": "minio"
+}
